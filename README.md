@@ -7,17 +7,98 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+# My-Wallet: Your Personal Finance Manager
+
+My-Wallet is a personal finance management application built with Laravel and Livewire. It allows users to track their income and expenses, categorize transactions, manage different fund sources, and generate reports. The application leverages Livewire for dynamic frontend components, providing a responsive and interactive user experience.
+
+## Features
+
+-   **Transaction Tracking:** Easily record and manage your income and expenses.
+-   **Category Management:** Organize your transactions with custom categories.
+-   **Fund Sources:** Keep track of multiple bank accounts, wallets, or other fund sources.
+-   **Financial Reports:** Generate insightful reports to understand your spending habits.
+-   **User Authentication:** Secure user registration and login.
+
+## Technologies Used
+
+-   **Laravel:** PHP Framework for robust web applications.
+-   **Livewire:** Full-stack framework for Laravel that makes building dynamic interfaces simple.
+-   **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+-   **MySQL (or other database):** For data storage.
+
+## Installation
+
+Follow these steps to get My-Wallet up and running on your local machine.
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/MarcYovian/my-wallet.git
+    cd my-wallet
+    ```
+
+2.  **Install PHP Dependencies:**
+
+    ```bash
+    composer install
+    ```
+
+3.  **Install JavaScript Dependencies:**
+
+    ```bash
+    npm install
+    ```
+
+4.  **Copy Environment File:**
+
+    ```bash
+    cp .env.example .env
+    ```
+
+5.  **Generate Application Key:**
+
+    ```bash
+    php artisan key:generate
+    ```
+
+6.  **Configure Database:**
+    Open your `.env` file and update the database credentials:
+
+    ```
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=my_wallet
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
+
+7.  **Run Migrations and Seeders:**
+
+    ```bash
+    php artisan migrate --seed
+    ```
+
+8.  **Start Development Server:**
+
+    ```bash
+    php artisan serve
+    npm run dev
+    ```
+
+    Visit `http://127.0.0.1:8000` in your web browser.
+
 ## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, suchs as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   [Simple, fast routing engine](https://laravel.com/docs/routing).
+-   [Powerful dependency injection container](https://laravel.com/docs/container).
+-   Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+-   Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+-   Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+-   [Robust background job processing](https://laravel.com/docs/queues).
+-   [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
@@ -35,14 +116,14 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 
 ### Premium Partners
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+-   **[Vehikl](https://vehikl.com)**
+-   **[Tighten Co.](https://tighten.co)**
+-   **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+-   **[64 Robots](https://64robots.com)**
+-   **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+-   **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+-   **[Redberry](https://redberry.international/laravel-development)**
+-   **[Active Logic](https://activelogic.com)**
 
 ## Contributing
 
