@@ -7,9 +7,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-# My-Wallet: Your Personal Finance Manager
+# Dompetku: Your Personal Finance Manager
 
-My-Wallet is a personal finance management application built with Laravel and Livewire. It allows users to track their income and expenses, categorize transactions, manage different fund sources, and generate reports. The application leverages Livewire for dynamic frontend components, providing a responsive and interactive user experience.
+Dompetku is a personal finance management application built with Laravel and Livewire. It allows users to track their income and expenses, categorize transactions, manage different fund sources, and generate reports. The application leverages Livewire for dynamic frontend components, providing a responsive and interactive user experience.
 
 ## Features
 
@@ -28,13 +28,13 @@ My-Wallet is a personal finance management application built with Laravel and Li
 
 ## Installation
 
-Follow these steps to get My-Wallet up and running on your local machine.
+Follow these steps to get Dompetku up and running on your local machine.
 
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/MarcYovian/my-wallet.git
-    cd my-wallet
+    git clone https://github.com/MarcYovian/dompetku.git
+    cd dompetku
     ```
 
 2.  **Install PHP Dependencies:**
