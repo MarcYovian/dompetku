@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages;
 
+use App\Livewire\Traits\WithDeleteConfirmation;
 use App\Models\FundSourceTransfer;
 use App\Services\FundSourceService;
 use App\Services\TransactionService;
@@ -11,6 +12,8 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
+    use WithDeleteConfirmation;
+
     #[Layout('layouts.app')]
     public $totalBalance = 0;
     public $monthlyIncome = 0;
@@ -32,6 +35,11 @@ class Dashboard extends Component
     }
 
     public function mount()
+    {
+        $this->loadDashboardData();
+    }
+
+    public function refreshData()
     {
         $this->loadDashboardData();
     }

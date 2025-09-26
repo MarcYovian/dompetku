@@ -115,4 +115,53 @@ class FundSourceTransferService extends BaseService
             return $transfer;
         });
     }
+
+    public function deleteTransfer(int $transferId)
+    {
+        return DB::transaction(function () use ($transferId) {
+            $transfer = $this->repository->find($transferId);
+
+            if (!$transfer) {
+                return;
+            }
+
+            // 1. Hapus transaksi biaya admin yang tertaut
+            Transaction::where('fund_source_transfer_id', $transfer->id)->delete();
+
+            $fromFundSource = $transfer->fromFundSource;
+            $toFundSource = $transfer->toFundSource;
+
+            // 2. Kembalikan saldo
+            $fromFundSource->increment('balance', $transfer->amount + $transfer->fee);
+            $toFundSource->decrement('balance', $transfer->amount);
+
+            // 3. Hapus transfer itu sendiri
+            $transfer->delete();
+        });
+    }
+
+    public function removeFeeFromTransfer(int $transferId)
+    {
+        DB::transaction(function () use ($transferId) {
+            $transfer = $this->repository->find($transferId);
+
+            // Pastikan ada transfer dan ada biaya yang bisa dihapus
+            if (!$transfer || $transfer->fee <= 0) {
+                return;
+            }
+
+            $feeAmount = $transfer->fee;
+            $fromFundSource = $transfer->fromFundSource;
+
+            // 1. Kembalikan saldo sebesar biaya yang dibatalkan
+            $fromFundSource->increment('balance', $feeAmount);
+
+            // 2. Hapus (nolkan) biaya dari catatan transfer induk
+            $transfer->fee = 0;
+            $transfer->save();
+
+            // 3. Hapus catatan transaksi biaya admin yang tertaut
+            Transaction::where('fund_source_transfer_id', $transfer->id)->delete();
+        });
+    }
 }

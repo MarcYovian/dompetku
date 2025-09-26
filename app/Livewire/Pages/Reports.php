@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages;
 
+use App\Livewire\Traits\WithDeleteConfirmation;
 use App\Models\FundSourceTransfer;
 use App\Services\CategoryService;
 use App\Services\FundSourceService;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 class Reports extends Component
 {
+    use WithDeleteConfirmation;
+
     #[Layout('layouts.app')]
     public $startDate;
     public $endDate;
@@ -41,6 +44,11 @@ class Reports extends Component
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
         $this->endDate = now()->endOfMonth()->format('Y-m-d');
         $this->fundSources = Auth::user()->fundSources;
+        $this->generateReport();
+    }
+
+    public function refreshData()
+    {
         $this->generateReport();
     }
 

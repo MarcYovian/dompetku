@@ -82,10 +82,37 @@ class TransactionService extends BaseService
         });
     }
 
-    public function deleteTransaction(int $id)
+    public function deleteTransaction(int $transactionId)
     {
-        // Similar complexity as update, needs to reverse the effect on fund source
-        return $this->transactionRepository->delete($id);
+        return DB::transaction(function () use ($transactionId) {
+            $transaction = $this->transactionRepository->find($transactionId);
+
+            if (!$transaction) {
+                return;
+            }
+
+            if ($transaction->fund_source_transfer_id) {
+                // JIKA YA: Jangan hapus langsung. Panggil service yang tepat untuk
+                // menangani pembatalan biaya.
+                $fundSourceTransferService = app(FundSourceTransferService::class);
+                $fundSourceTransferService->removeFeeFromTransfer($transaction->fund_source_transfer_id);
+            } else {
+                // JIKA TIDAK: Lanjutkan dengan logika penghapusan transaksi biasa.
+                DB::transaction(function () use ($transaction) {
+                    $fundSource = $transaction->fundSource;
+
+                    // 1. Kembalikan saldo
+                    if ($transaction->type === 'income') {
+                        $fundSource->decrement('balance', $transaction->amount);
+                    } else {
+                        $fundSource->increment('balance', $transaction->amount);
+                    }
+
+                    // 2. Hapus transaksi
+                    $transaction->delete();
+                });
+            }
+        });
     }
 
     public function getTransactionById(int $id)
