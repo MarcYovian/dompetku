@@ -15,10 +15,10 @@ class Dashboard extends Component
     public $totalBalance = 0;
     public $monthlyIncome = 0;
     public $monthlyExpense = 0;
-
     public $latestActivities;
-
     public $expenseDistribution;
+
+    public $fundSources;
 
     protected $fundSourceService;
     protected $transactionService;
@@ -40,8 +40,8 @@ class Dashboard extends Component
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $fundSources = $this->fundSourceService->getAllFundSources()->where('user_id', $userId);
-        $this->totalBalance = $fundSources->sum('balance');
+        $this->fundSources = $this->fundSourceService->getAllFundSources()->where('user_id', $userId);
+        $this->totalBalance = $this->fundSources->sum('balance');
 
         $monthlyData = $this->transactionService->getMonthlyIncomeExpense($userId, $currentYear, $currentMonth);
         $this->monthlyIncome = $monthlyData['income'];

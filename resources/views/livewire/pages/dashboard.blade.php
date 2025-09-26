@@ -80,6 +80,34 @@
         </div>
     </div>
 
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-8">
+        <h3 class="text-lg font-medium mb-4">Ringkasan Sumber Dana</h3>
+        <div class="space-y-4">
+            @forelse ($fundSources as $fundSource)
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span
+                            class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $fundSource->name }}</span>
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Rp {{ number_format($fundSource->balance, 0, ',', '.') }}
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        {{-- Hindari division by zero jika total saldo adalah 0 --}}
+                        @php
+                            $percentage = $totalBalance > 0 ? ($fundSource->balance / $totalBalance) * 100 : 0;
+                        @endphp
+                        <div class="bg-indigo-500 dark:bg-indigo-600 h-2.5 rounded-full"
+                            style="width: {{ $percentage }}%">
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <p class="text-center text-gray-500 dark:text-gray-400 py-8">Belum ada sumber dana.</p>
+            @endforelse
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {{-- Card untuk Aktivitas Terbaru --}}
         <div class="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
