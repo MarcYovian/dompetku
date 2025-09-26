@@ -17,4 +17,8 @@ class CategoryRepository extends BaseRepository
     }
 
     // Add specific methods for Category if needed
+    public function getGroupedCategoriesByType(string $type)
+    {
+        return $this->model->where('type', $type)->get();
+    }
 }

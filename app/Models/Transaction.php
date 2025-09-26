@@ -18,6 +18,7 @@ class Transaction extends Model
         'type',
         'description',
         'transaction_date',
+        'fund_source_transfer_id',
     ];
 
     protected $casts = [
@@ -37,5 +38,10 @@ class Transaction extends Model
     public function fundSource()
     {
         return $this->belongsTo(FundSource::class);
+    }
+
+    public function fundSourceTransfer()
+    {
+        return $this->belongsTo(FundSourceTransfer::class, 'fund_source_transfer_id');
     }
 }

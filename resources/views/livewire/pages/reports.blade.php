@@ -124,6 +124,33 @@
                                 <p class="text-sm text-gray-500 dark:text-gray-400">
                                     {{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}</p>
                             </div>
+                            @if ($activity->data->fund_source_transfer_id)
+                                {{-- Jika ini adalah biaya transfer, arahkan ke edit transfer --}}
+                                <a href="{{ route('transfers.edit', $activity->data->fund_source_transfer_id) }}"
+                                    wire:navigate class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                    title="Edit Biaya di Transfer Induk">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path
+                                            d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                        <path
+                                            d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                    </svg>
+                                </a>
+                            @else
+                                {{-- Jika ini transaksi biasa, arahkan ke edit transaction --}}
+                                <a href="{{ route('transactions.edit', $activity->data) }}" wire:navigate
+                                    class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                    title="Edit Transaksi">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path
+                                            d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                        <path
+                                            d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                    </svg>
+                                </a>
+                            @endif
                         </div>
 
                         {{-- Kondisi 2: Jika aktivitas adalah Transfer Dana --}}
@@ -155,6 +182,17 @@
                                     {{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}
                                 </p>
                             </div>
+                            <a href="{{ route('transfers.edit', $activity->data) }}" wire:navigate
+                                class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                                title="Edit Transaksi">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path
+                                        d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                    <path
+                                        d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                                </svg>
+                            </a>
                         </div>
                     @endif
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Transaction;
 use App\Repositories\FundSourceRepository;
 use App\Repositories\TransactionRepository;
 use Illuminate\Support\Facades\DB;
@@ -46,11 +47,38 @@ class TransactionService extends BaseService
         }
     }
 
-    public function updateTransaction(int $id, array $data)
+    public function updateTransaction(Transaction $transaction, array $data)
     {
-        // This is more complex as it involves reversing the old transaction's effect on fund source
-        // and then applying the new one. For now, I'll keep it simple.
-        return $this->transactionRepository->update($id, $data);
+        return DB::transaction(function () use ($transaction, $data) {
+            $originalFundSource = \App\Models\FundSource::find($data['originalFundSourceId']);
+            $newFundSource = \App\Models\FundSource::find($data['fund_source_id']);
+
+            // 1. Kembalikan saldo dari transaksi lama
+            if ($data['originalType'] === 'income') {
+                $originalFundSource->decrement('balance', $data['originalAmount']);
+            } else {
+                $originalFundSource->increment('balance', $data['originalAmount']);
+            }
+
+            // 2. Update data transaksi
+            $transaction->update([
+                'type' => $data['type'],
+                'amount' => $data['amount'],
+                'fund_source_id' => $data['fund_source_id'],
+                'category_id' => $data['category_id'],
+                'description' => $data['description'],
+                'transaction_date' => $data['transaction_date'],
+            ]);
+
+            // 3. Terapkan saldo pada transaksi baru
+            if ($data['type'] === 'income') {
+                $newFundSource->increment('balance', $data['amount']);
+            } else {
+                $newFundSource->decrement('balance', $data['amount']);
+            }
+
+            return $transaction;
+        });
     }
 
     public function deleteTransaction(int $id)

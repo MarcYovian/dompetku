@@ -37,4 +37,9 @@ class CategoryService extends BaseService
     {
         return $this->categoryRepository->find($id);
     }
+
+    public function getGroupedCategoriesByType(string $type)
+    {
+        return $this->categoryRepository->getGroupedCategoriesByType($type);
+    }
 }
