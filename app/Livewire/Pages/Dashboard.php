@@ -23,6 +23,8 @@ class Dashboard extends Component
     protected $fundSourceService;
     protected $transactionService;
 
+    public $financialTrendData = [];
+
     public function boot(FundSourceService $fundSourceService, TransactionService $transactionService)
     {
         $this->fundSourceService = $fundSourceService;
@@ -46,6 +48,8 @@ class Dashboard extends Component
         $monthlyData = $this->transactionService->getMonthlyIncomeExpense($userId, $currentYear, $currentMonth);
         $this->monthlyIncome = $monthlyData['income'];
         $this->monthlyExpense = $monthlyData['expense'];
+
+        $this->financialTrendData = $this->transactionService->getMonthlyFinancialTrend($userId, 6);
 
         $this->expenseDistribution = $this->transactionService->getExpenseDistributionByCategory($userId, $currentYear, $currentMonth);
 

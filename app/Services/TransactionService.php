@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Transaction;
 use App\Repositories\FundSourceRepository;
 use App\Repositories\TransactionRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TransactionService extends BaseService
@@ -115,5 +116,64 @@ class TransactionService extends BaseService
     public function getFilteredExpenseDistributionByCategory(int $userId, string $startDate, string $endDate, ?int $fundSourceId)
     {
         return $this->transactionRepository->getFilteredExpenseDistributionByCategoryForUser($userId, $startDate, $endDate, $fundSourceId);
+    }
+
+    public function getMonthlyFinancialTrend(int $userId, int $numberOfMonths = 6): array
+    {
+        $endDate = Carbon::now()->endOfMonth();
+        $startDate = Carbon::now()->subMonths($numberOfMonths - 1)->startOfMonth();
+
+        $transactions = DB::table('transactions')
+            ->select(
+                DB::raw('YEAR(transaction_date) as year'),
+                DB::raw('MONTH(transaction_date) as month'),
+                DB::raw("SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as total_income"),
+                DB::raw("SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as total_expense")
+            )
+            ->where('user_id', $userId)
+            ->whereBetween('transaction_date', [$startDate, $endDate])
+            ->groupBy('year', 'month')
+            ->orderBy('year', 'asc')
+            ->orderBy('month', 'asc')
+            ->get();
+
+        // Siapkan array untuk menampung hasil
+        $labels = [];
+        $incomeData = [];
+        $expenseData = [];
+        $date = $startDate->clone();
+
+        // Inisialisasi data untuk setiap bulan dalam rentang
+        $monthlyData = [];
+        while ($date <= $endDate) {
+            $key = $date->format('Y-n');
+            $monthlyData[$key] = [
+                'income' => 0,
+                'expense' => 0,
+            ];
+            $date->addMonth();
+        }
+
+        // Isi data dari hasil query
+        foreach ($transactions as $transaction) {
+            $key = $transaction->year . '-' . $transaction->month;
+            if (isset($monthlyData[$key])) {
+                $monthlyData[$key]['income'] = $transaction->total_income;
+                $monthlyData[$key]['expense'] = $transaction->total_expense;
+            }
+        }
+
+        // Format data untuk digunakan oleh chart
+        foreach ($monthlyData as $key => $values) {
+            $labels[] = Carbon::createFromFormat('Y-n', $key)->format('M Y');
+            $incomeData[] = $values['income'];
+            $expenseData[] = $values['expense'];
+        }
+
+        return [
+            'labels' => $labels,
+            'income' => $incomeData,
+            'expense' => $expenseData,
+        ];
     }
 }
