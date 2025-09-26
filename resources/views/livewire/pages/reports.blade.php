@@ -87,19 +87,20 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
         <div class="lg:col-span-3 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
-            <h3 class="text-lg font-medium mb-4">Filtered Transactions</h3>
+            <h3 class="text-lg font-medium mb-4">Filtered Activities</h3>
             <div class="space-y-4">
-                @if ($transactions->isEmpty())
-                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No transactions found for the selected
-                        criteria.</p>
-                @else
-                    @foreach ($transactions as $transaction)
+
+                @forelse ($activities as $activity)
+
+                    {{-- Kondisi 1: Jika aktivitas adalah Transaksi (Pemasukan/Pengeluaran) --}}
+                    @if ($activity->activity_type == 'transaction')
                         <div class="flex items-center space-x-4">
                             <div
-                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $transaction->type === 'income' ? 'bg-green-100 dark:bg-green-800/50' : 'bg-red-100 dark:bg-red-800/50' }}">
-                                <svg class="h-6 w-6 {{ $transaction->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}"
+                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity->data->type === 'income' ? 'bg-green-100 dark:bg-green-800/50' : 'bg-red-100 dark:bg-red-800/50' }}">
+                                {{-- Ikon Pemasukan/Pengeluaran --}}
+                                <svg class="h-6 w-6 {{ $activity->data->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}"
                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    @if ($transaction->type === 'income')
+                                    @if ($activity->data->type === 'income')
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                     @else
@@ -110,19 +111,58 @@
                             </div>
                             <div class="flex-1">
                                 <p class="font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $transaction->category->name }}</p>
+                                    {{ $activity->data->category->name }}</p>
                                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $transaction->transaction_date->format('d M Y') }} -
-                                    {{ $transaction->fundSource->name }}</p>
+                                    {{ $activity->data->fundSource->name }}</p>
                             </div>
-                            <p
-                                class="text-base font-semibold {{ $transaction->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
-                                {{ $transaction->type === 'income' ? '+' : '-' }} Rp
-                                {{ number_format($transaction->amount, 0, ',', '.') }}
-                            </p>
+                            <div class="text-right">
+                                <p
+                                    class="text-base font-semibold {{ $activity->data->type === 'income' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                                    {{ $activity->data->type === 'income' ? '+' : '-' }} Rp
+                                    {{ number_format($activity->data->amount, 0, ',', '.') }}
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}</p>
+                            </div>
                         </div>
-                    @endforeach
-                @endif
+
+                        {{-- Kondisi 2: Jika aktivitas adalah Transfer Dana --}}
+                    @else
+                        <div class="flex items-center space-x-4">
+                            <div
+                                class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 dark:bg-blue-800/50">
+                                {{-- Ikon Transfer --}}
+                                <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900 dark:text-gray-100">
+                                    Transfer Dana
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    Dari <span class="font-medium">{{ $activity->data->fromFundSource->name }}</span>
+                                    ke <span class="font-medium">{{ $activity->data->toFundSource->name }}</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-base font-semibold text-gray-700 dark:text-gray-300">
+                                    Rp {{ number_format($activity->data->amount, 0, ',', '.') }}
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ \Carbon\Carbon::parse($activity->activity_date)->format('d M Y') }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+
+                @empty
+                    <p class="text-center text-gray-500 dark:text-gray-400 py-8">No activities found for the selected
+                        criteria.</p>
+                @endforelse
+
             </div>
         </div>
 

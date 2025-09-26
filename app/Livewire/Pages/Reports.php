@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages;
 
+use App\Models\FundSourceTransfer;
 use App\Services\CategoryService;
 use App\Services\FundSourceService;
 use App\Services\TransactionService;
@@ -14,11 +15,11 @@ class Reports extends Component
     #[Layout('layouts.app')]
     public $startDate;
     public $endDate;
-    public $selectedType = ''; // income, expense, or empty for all
-    public $selectedFundSource = ''; // fund_source_id or empty for all
+    public $selectedType = '';
+    public $selectedFundSource = '';
 
-    public $transactions;
-    public $categories;
+    // 2. Ganti properti $transactions menjadi $activities
+    public $activities;
     public $fundSources;
     public $expenseDistribution;
     public $totalIncome = 0;
@@ -26,13 +27,12 @@ class Reports extends Component
     public $netDifference = 0;
 
     protected $transactionService;
-    protected $categoryService;
     protected $fundSourceService;
 
-    public function boot(TransactionService $transactionService, CategoryService $categoryService, FundSourceService $fundSourceService)
+    // 3. Kita tidak lagi butuh CategoryService di sini
+    public function boot(TransactionService $transactionService, FundSourceService $fundSourceService)
     {
         $this->transactionService = $transactionService;
-        $this->categoryService = $categoryService;
         $this->fundSourceService = $fundSourceService;
     }
 
@@ -40,7 +40,6 @@ class Reports extends Component
     {
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
         $this->endDate = now()->endOfMonth()->format('Y-m-d');
-        $this->categories = Auth::user()->categories;
         $this->fundSources = Auth::user()->fundSources;
         $this->generateReport();
     }
@@ -48,11 +47,9 @@ class Reports extends Component
     public function generateReport()
     {
         $userId = Auth::id();
-
         $fundSourceId = $this->selectedFundSource === '' ? null : (int) $this->selectedFundSource;
 
-        // Fetch transactions using TransactionService
-        $this->transactions = $this->transactionService->getFilteredTransactions(
+        $transactions = $this->transactionService->getFilteredTransactions(
             $userId,
             $this->startDate,
             $this->endDate,
@@ -60,18 +57,50 @@ class Reports extends Component
             $fundSourceId
         );
 
-        // Fetch expense distribution using TransactionService
+        $transfersQuery = FundSourceTransfer::where('user_id', $userId)
+            ->with(['fromFundSource', 'toFundSource'])
+            ->whereBetween('transfer_date', [$this->startDate, $this->endDate]);
+
+        if ($fundSourceId) {
+            $transfersQuery->where(function ($query) use ($fundSourceId) {
+                $query->where('from_fund_source_id', $fundSourceId)
+                    ->orWhere('to_fund_source_id', $fundSourceId);
+            });
+        }
+
+        $transfers = $this->selectedType === '' ? $transfersQuery->get() : collect();
+
+        $this->activities = $transactions->map(function ($item) {
+            return (object) [
+                'activity_date' => $item->transaction_date,
+                'activity_type' => 'transaction',
+                'sortable_timestamp' => $item->created_at,
+                'data' => $item,
+            ];
+        })->concat($transfers->map(function ($item) {
+            return (object) [
+                'activity_date' => $item->transfer_date,
+                'activity_type' => 'transfer',
+                'sortable_timestamp' => $item->created_at,
+                'data' => $item,
+            ];
+        }))
+            ->sortByDesc('activity_date')
+            ->sortByDesc('sortable_timestamp');
+
+
+        $this->totalIncome = $transactions->where('type', 'income')->sum('amount');
+        $this->totalExpense = $transactions->where('type', 'expense')->sum('amount');
+        $this->netDifference = $this->totalIncome - $this->totalExpense;
+
         $this->expenseDistribution = $this->transactionService->getFilteredExpenseDistributionByCategory(
             $userId,
             $this->startDate,
             $this->endDate,
             $fundSourceId
         );
-
-        $this->totalIncome = $this->transactions->where('type', 'income')->sum('amount');
-        $this->totalExpense = $this->transactions->where('type', 'expense')->sum('amount');
-        $this->netDifference = $this->totalIncome - $this->totalExpense;
     }
+
     public function render()
     {
         return view('livewire.pages.reports');

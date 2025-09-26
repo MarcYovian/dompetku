@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages;
 
+use App\Models\FundSourceTransfer;
 use App\Services\FundSourceService;
 use App\Services\TransactionService;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,9 @@ class Dashboard extends Component
     public $totalBalance = 0;
     public $monthlyIncome = 0;
     public $monthlyExpense = 0;
-    public $latestTransactions;
+
+    public $latestActivities;
+
     public $expenseDistribution;
 
     protected $fundSourceService;
@@ -37,20 +40,42 @@ class Dashboard extends Component
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        // Total Balance
         $fundSources = $this->fundSourceService->getAllFundSources()->where('user_id', $userId);
         $this->totalBalance = $fundSources->sum('balance');
 
-        // Monthly Income and Expense
         $monthlyData = $this->transactionService->getMonthlyIncomeExpense($userId, $currentYear, $currentMonth);
         $this->monthlyIncome = $monthlyData['income'];
         $this->monthlyExpense = $monthlyData['expense'];
 
-        // Latest Transactions
-        $this->latestTransactions = $this->transactionService->getLatestTransactions($userId, 5);
-
-        // Expense Distribution by Category
         $this->expenseDistribution = $this->transactionService->getExpenseDistributionByCategory($userId, $currentYear, $currentMonth);
+
+        $transactions = $this->transactionService->getLatestTransactions($userId, 5);
+
+        $transfers = FundSourceTransfer::where('user_id', $userId)
+            ->with(['fromFundSource', 'toFundSource'])
+            ->latest('transfer_date')
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        $this->latestActivities = $transactions->map(function ($item) {
+            return (object) [
+                'activity_date' => $item->transaction_date,
+                'activity_type' => 'transaction',
+                'sortable_timestamp' => $item->created_at,
+                'data' => $item, // simpan model aslinya kalau masih butuh
+            ];
+        })->concat($transfers->map(function ($item) {
+            return (object) [
+                'activity_date' => $item->transfer_date,
+                'activity_type' => 'transfer',
+                'sortable_timestamp' => $item->created_at,
+                'data' => $item,
+            ];
+        }))
+            ->sortByDesc('activity_date')
+            ->sortByDesc('sortable_timestamp')
+            ->take(5);
     }
 
     public function render()

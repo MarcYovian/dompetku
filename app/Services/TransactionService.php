@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Repositories\TransactionRepository;
 use App\Repositories\FundSourceRepository;
+use App\Repositories\TransactionRepository;
 use Illuminate\Support\Facades\DB;
 
 class TransactionService extends BaseService
