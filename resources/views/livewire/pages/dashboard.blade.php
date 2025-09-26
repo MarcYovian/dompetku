@@ -281,6 +281,7 @@
 
 @push('scripts')
     <script>
+        let financialTrendChart = null;
         document.addEventListener('livewire:navigated', () => {
             const chartData = @json($financialTrendData);
 
@@ -365,8 +366,16 @@
                 }
             };
 
-            const chart = new ApexCharts(document.querySelector("#financial-trend-chart"), options);
-            chart.render();
+            if (financialTrendChart) {
+                // Jika ya, hancurkan instance chart yang lama untuk mencegah duplikasi
+                financialTrendChart.destroy();
+            }
+
+            document.querySelector("#financial-trend-chart").innerHTML = '';
+
+            // 3. Render chart yang baru dan simpan instance-nya ke variabel global
+            financialTrendChart = new ApexCharts(document.querySelector("#financial-trend-chart"), options);
+            financialTrendChart.render();
         });
     </script>
 @endpush
