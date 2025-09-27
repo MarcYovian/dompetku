@@ -182,4 +182,4 @@ This project is licensed under the **MIT License**. See `LICENSE.md` for details
 For questions, ideas, or collaboration opportunities:
 
 -   **GitHub**: [marcyovian](https://github.com/marcyovian)
--   **Email**: `marcel.yovian@gmail.com`
+-   **Email**: `marcellinusyovian@gmail.com`
