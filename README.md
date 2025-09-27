@@ -48,71 +48,70 @@ Make sure your server or local environment meets the following requirements:
 Follow these steps to set up the project locally:
 
 1. **Clone the Repository**
+
     ```bash
     git clone https://github.com/marcyovian/dompetku.git
     cd dompetku
     ```
 
-````
-
 2. **Install PHP Dependencies**
 
-   ```bash
-   composer install
-   ```
+    ```bash
+    composer install
+    ```
 
 3. **Install JavaScript Dependencies**
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 4. **Set Up Environment File**
    Copy `.env.example` to `.env` and configure your database:
 
-   ```bash
-   cp .env.example .env
-   ```
+    ```bash
+    cp .env.example .env
+    ```
 
-   Example configuration:
+    Example configuration:
 
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=dompetku
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=dompetku
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
 
 5. **Generate Application Key**
 
-   ```bash
-   php artisan key:generate
-   ```
+    ```bash
+    php artisan key:generate
+    ```
 
 6. **Run Database Migrations & Seeders**
    This creates the necessary tables and seeds initial data (e.g., categories).
 
-   ```bash
-   php artisan migrate --seed
-   ```
+    ```bash
+    php artisan migrate --seed
+    ```
 
 7. **Compile Frontend Assets**
 
-   ```bash
-   npm run dev
-   ```
+    ```bash
+    npm run dev
+    ```
 
-   Keep this running in your terminal.
+    Keep this running in your terminal.
 
 8. **Run Development Server**
 
-   ```bash
-   php artisan serve
-   ```
+    ```bash
+    php artisan serve
+    ```
 
-   The app will be available at `http://127.0.0.1:8000`.
+    The app will be available at `http://127.0.0.1:8000`.
 
 ---
 
@@ -120,11 +119,11 @@ Follow these steps to set up the project locally:
 
 Once installed, you can start using the app:
 
-* **Register a New Account**: Sign up via the registration page.
-* **Login with Demo Account** (if seeders were run):
+-   **Register a New Account**: Sign up via the registration page.
+-   **Login with Demo Account** (if seeders were run):
 
-  * **Email**: `user@example.com`
-  * **Password**: `password`
+    -   **Email**: `user@example.com`
+    -   **Password**: `password`
 
 After logging in, try:
 
@@ -138,12 +137,12 @@ After logging in, try:
 
 This project follows Laravel’s standard structure with emphasis on the **Service-Repository Pattern** for better code organization:
 
-* `app/Http/Livewire/Pages`: Main Livewire components representing pages.
-* `app/Services`: Business logic (e.g., `TransactionService` handles balance updates).
-* `app/Repositories`: Database interaction logic using Eloquent.
-* `app/Livewire/Traits`: Reusable Livewire traits (e.g., `WithDeleteConfirmation`).
-* `database/migrations`: Database schema.
-* `resources/views`: Blade files for Livewire components and layouts.
+-   `app/Http/Livewire/Pages`: Main Livewire components representing pages.
+-   `app/Services`: Business logic (e.g., `TransactionService` handles balance updates).
+-   `app/Repositories`: Database interaction logic using Eloquent.
+-   `app/Livewire/Traits`: Reusable Livewire traits (e.g., `WithDeleteConfirmation`).
+-   `database/migrations`: Database schema.
+-   `resources/views`: Blade files for Livewire components and layouts.
 
 ---
 
@@ -154,9 +153,10 @@ Contributions are welcome! To contribute:
 1. **Fork** the repository.
 2. Create a new branch:
 
-   ```bash
-   git checkout -b feature/awesome-feature
-   ```
+    ```bash
+    git checkout -b feature/awesome-feature
+    ```
+
 3. **Follow Coding Standards**: Keep logic separated in Services & Repositories.
 4. Submit a **Pull Request** to the `main` branch.
 5. Clearly describe your changes in the PR.
@@ -173,6 +173,5 @@ This project is licensed under the **MIT License**. See `LICENSE.md` for details
 
 For questions, ideas, or collaboration opportunities:
 
-* **GitHub**: [marcyovian](https://github.com/marcyovian)
-* **Email**: `marcel.yovian@gmail.com`
-````
+-   **GitHub**: [marcyovian](https://github.com/marcyovian)
+-   **Email**: `marcel.yovian@gmail.com`
