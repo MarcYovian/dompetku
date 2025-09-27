@@ -4,7 +4,13 @@
 
 Dompetku is a modern web application for personal finance management designed to help users easily track income, expenses, and fund transfers between accounts. Built with the TALL stack (Tailwind CSS, Alpine.js, Laravel, Livewire), it provides a fast, reactive user experience similar to a SPA.
 
-🔗 **Live Demo**: [dompetku.marcyovian.my.id](https://dompetku.marcyovian.my.id)
+---
+
+## 🚀 Live Demo
+
+You can try this application directly via the following link:
+
+**[https://dompetku.marcyovian.my.id](https://dompetku.marcyovian.my.id)**
 
 ---
 
