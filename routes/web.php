@@ -7,10 +7,11 @@ use App\Livewire\Pages\EditTransaction;
 use App\Livewire\Pages\EditTransfer;
 use App\Livewire\Pages\FundSources;
 use App\Livewire\Pages\FundSourceTransfer;
+use App\Livewire\Pages\Home;
 use App\Livewire\Pages\Reports;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::get('/', Home::class)->name('home');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
